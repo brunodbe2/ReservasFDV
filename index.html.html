@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FDV — Reservas de Espaços</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Open+Sans:wght@400;500;600&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --navy: #0e1a38;
+      --navy2: #162040;
+      --navy3: #1e2d55;
+      --blue: #1a6fc4;
+      --sky: #4eaee8;
+      --sky-lt: #e8f4fc;
+      --white: #ffffff;
+      --off: #f4f6fa;
+      --border: #dce3ef;
+      --text: #1a2340;
+      --muted: #6b7a99;
+      --danger: #d93a3a;
+      --success: #1a9e5c;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background: var(--off);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── TOP BAR ── */
+    .topbar {
+      background: var(--navy);
+      height: 7px;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: var(--navy);
+      padding: 0 40px;
+      display: flex;
+      align-items: center;
+      gap: 0;
+      height: 68px;
+      position: relative;
+    }
+
+    .header-logo {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      text-decoration: none;
+    }
+
+    /* SVG FDV logo replica */
+    .fdv-logo-svg {
+      height: 44px;
+      width: auto;
+      display: block;
+      border-radius: 6px;
+    }
+
+    .header-divider {
+      width: 1px;
+      height: 32px;
+      background: rgba(255, 255, 255, 0.2);
+      margin: 0 20px;
+    }
+
+    .header-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.9);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .header-date {
+      margin-left: auto;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.55);
+      font-family: 'Open Sans', sans-serif;
+    }
+
+    /* ── NAV STRIP ── */
+    .nav-strip {
+      background: var(--navy2);
+      border-bottom: 3px solid var(--blue);
+      padding: 0 40px;
+      display: flex;
+      align-items: center;
+      height: 42px;
+      gap: 4px;
+    }
+
+    .nav-strip a {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.6);
+      text-decoration: none;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 0 14px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -3px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .nav-strip a:hover {
+      color: #fff;
+    }
+
+    .nav-strip a.active {
+      color: #fff;
+      border-bottom-color: var(--sky);
+    }
+
+    /* ── LAYOUT ── */
+    .main-layout {
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      min-height: calc(100vh - 120px);
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      background: var(--white);
+      border-right: 1px solid var(--border);
+      padding: 28px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    .sidebar-heading {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--navy);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding-bottom: 14px;
+      border-bottom: 2px solid var(--blue);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .sidebar-heading::before {
+      content: '';
+      display: inline-block;
+      width: 4px;
+      height: 18px;
+      background: var(--sky);
+      border-radius: 2px;
+    }
+
+    .section-label {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 10px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      font-family: 'Montserrat', sans-serif;
+      letter-spacing: 0.02em;
+    }
+
+    select,
+    input,
+    textarea {
+      background: var(--off);
+      border: 1.5px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-family: 'Open Sans', sans-serif;
+      font-size: 13px;
+      padding: 9px 12px;
+      width: 100%;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    select:focus,
+    input:focus,
+    textarea:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(26, 111, 196, 0.12);
+      background: #fff;
+    }
+
+    select option {
+      background: #fff;
+      color: var(--text);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 72px;
+    }
+
+    .time-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: var(--blue);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 11px;
+      cursor: pointer;
+      width: 100%;
+      transition: background 0.2s, transform 0.1s;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .btn-primary:hover {
+      background: #155fa8;
+      transform: translateY(-1px);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--muted);
+      border: 1.5px solid var(--border);
+      border-radius: 6px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 8px;
+      cursor: pointer;
+      width: 100%;
+      transition: border-color 0.2s, color 0.2s;
+      margin-top: 6px;
+      letter-spacing: 0.03em;
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--blue);
+      color: var(--blue);
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ── MAIN PANEL ── */
+    .panel {
+      padding: 28px 36px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+      background: var(--off);
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      padding-bottom: 14px;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .panel-eyebrow {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      color: var(--blue);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .panel-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--navy);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .filter-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 16px;
+    }
+
+    .filter-row select,
+    .filter-row input {
+      width: auto;
+      flex: 1;
+      min-width: 140px;
+      max-width: 220px;
+      background: var(--off);
+    }
+
+    .reservations-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .reservation-card {
+      background: var(--white);
+      border: 1.5px solid var(--border);
+      border-left: 4px solid var(--blue);
+      border-radius: 8px;
+      padding: 14px 18px;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 16px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .reservation-card:hover {
+      border-color: var(--blue);
+      box-shadow: 0 4px 16px rgba(14, 26, 56, 0.08);
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .card-date {
+      text-align: center;
+      min-width: 52px;
+      background: var(--sky-lt);
+      border-radius: 8px;
+      padding: 8px 10px;
+    }
+
+    .card-date .day {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 26px;
+      font-weight: 800;
+      line-height: 1;
+      color: var(--navy);
+    }
+
+    .card-date .month {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--blue);
+      text-transform: uppercase;
+    }
+
+    .card-info {}
+
+    .card-info .room {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--navy);
+      margin-bottom: 3px;
+    }
+
+    .card-info .event {
+      font-size: 12px;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 380px;
+    }
+
+    .card-info .time-badge {
+      display: inline-block;
+      background: var(--sky-lt);
+      border: 1px solid #c5dff5;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--blue);
+      padding: 2px 8px;
+      margin-top: 5px;
+      font-family: 'Montserrat', sans-serif;
+      letter-spacing: 0.03em;
+      margin-top: 5px;
+    }
+
+    .card-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .btn-del {
+      background: transparent;
+      border: 1.5px solid var(--border);
+      border-radius: 6px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 5px 12px;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+      font-family: 'Montserrat', sans-serif;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    .btn-del:hover {
+      border-color: var(--danger);
+      color: var(--danger);
+      background: #fef2f2;
+    }
+
+    .type-badge {
+      display: inline-block;
+      border-radius: 4px;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .type-sala {
+      background: #e8f0fb;
+      color: var(--blue);
+      border: 1px solid #b8d0f0;
+    }
+
+    .type-auditorio {
+      background: #e6f6ef;
+      color: #1a7a4a;
+      border: 1px solid #a8dfc0;
+    }
+
+    .type-lab {
+      background: #f0eeff;
+      color: #5540bb;
+      border: 1px solid #ccc4f0;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--muted);
+      background: var(--white);
+      border: 1.5px dashed var(--border);
+      border-radius: 8px;
+    }
+
+    .empty-state .icon {
+      font-size: 40px;
+      margin-bottom: 12px;
+    }
+
+    .empty-state p {
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .count-badge {
+      background: var(--navy);
+      color: #fff;
+      border-radius: 20px;
+      font-size: 11px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      padding: 4px 12px;
+      letter-spacing: 0.04em;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      background: var(--white);
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 20px;
+      font-size: 13px;
+      display: none;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Open Sans', sans-serif;
+      box-shadow: 0 8px 24px rgba(14, 26, 56, 0.12);
+      z-index: 999;
+      max-width: 320px;
+      animation: slideUp 0.3s ease;
+    }
+
+    .toast.show {
+      display: flex;
+    }
+
+    .toast.success {
+      border-color: var(--success);
+      color: var(--success);
+    }
+
+    .toast.error {
+      border-color: var(--danger);
+      color: var(--danger);
+    }
+
+    @keyframes slideUp {
+      from {
+        transform: translateY(16px);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .separator-section {
+      border-top: 2px solid var(--border);
+      padding-top: 20px;
+    }
+
+    /* Export section */
+    .export-box {
+      background: var(--navy);
+      border-radius: 8px;
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .export-box-text {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .export-box h3 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .export-box p {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.6);
+      line-height: 1.6;
+      margin-bottom: 8px;
+    }
+
+    .export-box code {
+      display: block;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 5px;
+      padding: 8px 12px;
+      font-size: 11px;
+      color: var(--sky);
+      font-family: monospace;
+      overflow-x: auto;
+      white-space: pre;
+    }
+
+    .export-box .btn-export {
+      background: var(--sky);
+      color: var(--navy);
+      border: none;
+      border-radius: 6px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 10px 20px;
+      cursor: pointer;
+      transition: background 0.2s;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+    }
+
+    .export-box .btn-export:hover {
+      background: #73c9f5;
+    }
+
+    @media (max-width: 768px) {
+      .main-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+
+      header {
+        padding: 14px 20px;
+      }
+
+      .nav-strip {
+        padding: 0 20px;
+      }
+
+      .panel {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- FDV HEADER -->
+  <div class="topbar"></div>
+  <header>
+    <img class="fdv-logo-svg"
+      src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCABoAIMDASIAAhEBAxEB/8QAGwABAAMAAwEAAAAAAAAAAAAAAAcICQMEBgX/xAA+EAABAwMCBAIGBwQLAAAAAAABAgMEAAUGBxEIEiFRMUETIjJhcYEJFBVCgpGhI3SSshYkJTY4YmOTorHC/8QAGQEBAAMBAQAAAAAAAAAAAAAAAAECAwQF/8QAHxEBAAICAwEBAQEAAAAAAAAAAAECETEDEiEEQRMy/9oADAMBAAIRAxEAPwCnVKUr2GRSlKBSlKBSlc0OLJmym4sOO7IfdVyttNIKlKPYAdTQcNKlGwcPest8hiXAwSeGj1H1p5mMo/hdWk/pXmsz02zzDeY5NitztzaTsXltczX+4ndJ/OqxesziJTh5OlKVZBSlKBSlKBSlKBSlKBSlKBSuza4Ey6XGPbrdGdlTJLiWmGWk8ynFqOwAHcmpouHCrrLEtX18WKHJUEcyozE5tTyfdtuAT7gTVZtWu5Sg4dTtWlfC5o9YtOsHt1ychMP5LPipemTVJ3W3zgK9Egn2UjfY7eJG58qzivVputknrgXi2zLdLbOy2ZLKmlp+SgDWhHCvrnj2cYfbsfu9xjwcogR0MOsPqCPrQSOUONk9FEgDdI6g79Nqw+ntNfNJqnquKXGjzIrsWWw2/HeQUONOJCkrSRsQQehBrlrp3m62yzW924Xa4RYERpJU49IdDaEgdyelcC7PzjW0os+nWaQLpjjQjWm+IcWmIPZjuoI5ko/ynmBA8uo8Nqr9U6cYer1u1RzOHGx8LVY7Ohbcd9aSkyXFkc7gB6hPqpA369N/PaoLr1OLt0jttnOylKVogpSlApSlApSlApSlBZb6PfFkXfVe4ZG+wlxmxwt0KUN+R57dKT8eVLlX6rLnQHV++6Q5FKuFsisz4U5tLc2G6opS6EklKgoeChzK2Ox9o9Kupp1xSaWZW0y1cLmvG569gpm5DlbCvc6PV2955fhXD9HHebZ/F6zCTs9wTEc6tht+VWKHcmh7CnEbONnuhY9ZJ+BqrmpfBi4JDs/TvIwhHtIg3IndJ7JdSPy3T8TVvrfPg3GMiTb5seWwsbpcYdC0qHcEHY12axpyWpqUzGWcN2t/E5p8wqE8/nEWGyNgqNKckMpA7KQVAD8qinKskyu/yyrJ73d7k+g+E6S44U/JR6VrpXTm2q1zjvNtsOSf9ZhK/wDsVtX6cbqjqx/YYefdS0wy464o7JShJJPwAr32IaKapZU62m04XdA25ts/Ja+rtAd+ZzYbfCtN5JxrGobk2R9k2eM2OZby/RsISO5J2AqBtW+LbCMbjuw8NScnunVKXE7oiN+8r8V/BI2PcVePotf/ADVHWIRE9w64ppbjK8v1kyZuSltP9Xs1sXyqlu7dGw4oAn38oG3jvVa8hns3S9S58eBHt7DzhLUVgbIZR4JSO+wA6nqT1PU19rUvP8p1EyFy95Tcly3iSGmh6rTCSfYbR4JH6nzJry1dFK2j20+okpSlXQUpSgUpSgUpSgUpU6cIGjsDVPLJsq/rc+wrOlC32WyUqkuLJ5W+YdQn1SSR18vPeq2tFYzKUO2a/Xyyuh2z3m425wfeiyVtH/iRUhWLiI1ls7aW42cz30DymNtyD+biSf1q90zRrRS3W9DE3CsajMK/ZpcfbSlSj25yeYn571nHqtFtcHU3J4Fkjoj2yLdpLEVtCipKW0OqSnYkkkbCsqXry/hMYSWOKzWrl2/pDD37/ZrO/wDLXxb7xF6zXhpTUjOJkdtXlDZajn+JCQr9a8ro1bYN51ZxS03OMiTCmXeMxIZXvs4hTiQpJ27g1dTiI0V0ux3RTKb1ZcOgQ7hEh87D6CvmbVzpG43V76WnjpaIxtPsqH3q+3u9vF683i4XJ0/flSVun81E186lK3VKUpQKUpQKUpQKUpQKUpQc0FkSZrEcqKQ64lBI8tztWm3Dxo3A0gtt1iwL1JugubjTqlPMpQW+QKGw2J39qsxmXFsvIdbVyrQoKSexHhV/+BzUPMdQLHkz+X3py6OQpLCI5U02jkSpKyR6iR2HjXN9MW6+aWq7XFtpVjuWiNl2UZfdLXFt7KYkeDEjB9T7y1nlS2ncEuLJA2HbsKi/BuDOTcmFz8pyKRaEOqKmILTSXn0I8vSr35QvuEggdzVhr6w5f+ImyQJOy7djtlcuiWldUqlvOehbWR3ShLmx8io18Di91bumleEQlY+2ybxdn1MsPPJ5ksISAVr5fAnqAAenXfrttWFL38pWUzEbRhE4TrjhWo2K5Ri9++2YMC7xnpkeS0Gnm20uJJWkgkL2HUjoe29TxxJxBP0PyeCVlsSI6GioDfl5nUDfb51WThr4ls8umqNrxrNLg1dbdd3xFQsx0NuMOq6IIKAARvsCCD47+VWh4hnW2NHMgfeWENtttLWo+CQHkEml+8XiLEYx4pBxM6AL0gtdousS+PXmFOeWw64uKGvQuAcyR0Ud9wFfw14vQPTd/VPUWNizcxUFhTLj8mUlv0haQhPjy7jfdRSPHzrQXiVxIZ5odfbZDbTJlJjCbB5evM4366eX3qG6fxVDH0dWGpiY1fM4ktftpzwgxSR4Nt9VkfFRA/BWteaf5zM7Rj1Heu3DPYNLtO5eUyc7ky3kOIZixVQEo9O6o9E7+kO2wClHp4JNVmq0X0hGdC753b8Ihuc0aytemlbHoZDg8Pwo2/iNVdrbhm01zZE7KUpWqClKUClKUClKUCrs/Rs/3czL97jfyOVSapl4dteJmjtuu8OLjbF3FydbcUpyUWvR8gUNuiTvvzVlzVm1JiExPq4F3yuLYeL632ea82y3fMYEdorOwLyH1rQN+5AWB3JFc3FjpFM1YwmIxZpLLF5tbyn4qXjs28FDZTZP3d9gQe49+4pBrxq5O1TzS35R9lJscmDGSw2liSXCClalhYVskg7n9KlbAeMvLrLaWoGT45EyNxpIQmUmUYrqwB4r2QpJPvAFYTw3jFq7WzD7XDZwxZpZNSrdlObsxbdDtDwkMsIkJdcfdT7Hs7gJB6kk79ANutWG4qv8PWZ/uH/tNVdzTjJyy8LiN2PG4tjityW3ZIEsvOvoSsKLYXyJCAoDYkJJ2NdbU/izuOc4DeMTewmLCRc2PQmQm4KWW+oO/LyDfw70nj5bWi1jMQsZwYZ0jNNFYESQ6V3Gx/2dJCjuSlI/ZK+BRsPik1IIYx3S3TWY5EZTFtFnjvyyknx3KnFfMqJ/Os7OHrWW7aP3q4zIVtausW4MBt6I4+WhzpVulYIB6gFQ8PvV7HXDifvWpmBvYkMbYsrEh5tch1qYp0uIQeYI2KR05gk/Kot89pv5oifEJZffp+UZTc8iubnpJlxkrkOny3Ud9h7h4D3CvlUpXbpQpSlApSlApSlApSlApSlApSlApSlApSlApSlApSlApSlB/9k="
+      alt="FDV" />
+    <div class="header-divider"></div>
+    <span class="header-title">Sistema de Reservas de Espaços</span>
+    <span class="header-date" id="current-date"></span>
+  </header>
+
+  <nav class="nav-strip">
+    <a href="#" class="active">Nova Reserva</a>
+    <a href="#">Agenda</a>
+    <a href="#">Espaços</a>
+  </nav>
+
+  <div class="main-layout">
+
+    <!-- SIDEBAR: formulário de nova reserva -->
+    <aside class="sidebar">
+      <div class="sidebar-heading">Nova Reserva</div>
+      <div>
+        <div class="section-label">Espaço</div>
+
+        <div class="form-group">
+          <label>Tipo de Espaço</label>
+          <select id="tipo" onchange="updateRoomOptions()">
+            <option value="sala">Sala de Aula</option>
+            <option value="auditorio">Auditório</option>
+            <option value="lab">Laboratório (LAB01)</option>
+          </select>
+        </div>
+
+        <div class="form-group" id="room-group" style="margin-top:12px">
+          <label>Sala / Espaço</label>
+          <select id="sala"></select>
+        </div>
+
+        <div class="form-group" style="margin-top:12px">
+          <label>Data</label>
+          <input type="date" id="data">
+        </div>
+
+        <div style="margin-top:12px">
+          <label
+            style="font-size:12px; font-family:'Montserrat',sans-serif; font-weight:600; color:var(--muted); display:block; margin-bottom:6px">Horário</label>
+          <div class="time-grid">
+            <select id="horario_inicio">
+              <option>7:30 - 8:20</option>
+              <option>8:20 - 9:10</option>
+              <option>9:10 - 9:30</option>
+              <option>9:30 - 10:20</option>
+              <option>10:20 - 11:10</option>
+              <option>11:10 - 12:00</option>
+              <option>13:00</option>
+              <option>14:00</option>
+              <option>15:00</option>
+              <option>16:00</option>
+              <option>17:00</option>
+              <option>18:00</option>
+              <option>19:00 - 19:50</option>
+              <option>19:50 - 20:40</option>
+              <option>20:40 - 21:00</option>
+              <option>21:00 - 21:50</option>
+              <option>21:50 - 22:40</option>
+            </select>
+            <select id="horario_fim">
+              <option value="">— até —</option>
+              <option>8:20 - 9:10</option>
+              <option>9:10 - 9:30</option>
+              <option>9:30 - 10:20</option>
+              <option>10:20 - 11:10</option>
+              <option>11:10 - 12:00</option>
+              <option>13:00</option>
+              <option>14:00</option>
+              <option>15:00</option>
+              <option>16:00</option>
+              <option>17:00</option>
+              <option>18:00</option>
+              <option>19:00 - 19:50</option>
+              <option>19:50 - 20:40</option>
+              <option>20:40 - 21:00</option>
+              <option>21:00 - 21:50</option>
+              <option>21:50 - 22:40</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div>
+        <div class="section-label">Detalhes</div>
+
+        <div class="form-group" id="favorecido-group">
+          <label id="label-favorecido">Responsável / Favorecido</label>
+          <input type="text" id="favorecido" placeholder="Nome do solicitante">
+        </div>
+
+        <div class="form-group" id="evento-group" style="margin-top:12px">
+          <label id="label-evento">Curso / Descrição do Evento</label>
+          <input type="text" id="evento" placeholder="Nome do evento ou curso">
+        </div>
+
+        <div class="form-group" id="motivo-group" style="margin-top:12px; display:none">
+          <label>Motivo</label>
+          <input type="text" id="motivo" placeholder="Motivo da reserva">
+        </div>
+
+        <div class="form-group" style="margin-top:12px">
+          <label>Observações</label>
+          <textarea id="observacoes" placeholder="Observações adicionais, recursos necessários..."></textarea>
+        </div>
+      </div>
+
+      <div>
+        <button class="btn-primary" id="btn-add" onclick="addReservation()">＋ Adicionar Reserva</button>
+        <button class="btn-secondary" onclick="clearForm()">Limpar formulário</button>
+      </div>
+    </aside>
+
+    <!-- MAIN PANEL -->
+    <main class="panel">
+
+      <div class="panel-header">
+        <div>
+          <div class="panel-eyebrow">Março 2026 · FDV</div>
+          <h2 class="panel-title">Reservas Cadastradas</h2>
+        </div>
+        <span class="count-badge" id="count-label">0 reservas</span>
+      </div>
+
+      <div class="filter-row">
+        <input type="date" id="filter-date" onchange="renderList()" placeholder="Filtrar data">
+        <select id="filter-tipo" onchange="renderList()">
+          <option value="">Todos os espaços</option>
+          <option value="sala">Salas</option>
+          <option value="auditorio">Auditório</option>
+          <option value="lab">Laboratório</option>
+        </select>
+        <input type="text" id="filter-text" oninput="renderList()" placeholder="Buscar evento...">
+      </div>
+
+      <div class="reservations-list" id="reservations-list">
+        <div class="empty-state">
+          <div class="icon">📋</div>
+          <p>Nenhuma reserva cadastrada ainda.<br>Use o formulário ao lado para adicionar.</p>
+        </div>
+      </div>
+
+      <div class="separator-section" style="display:none">
+        <div class="export-box">
+          <div class="export-box-text">
+            <h3>Exportar para Excel</h3>
+            <p>Baixe o JSON e use o script Python para gravar na planilha da agenda de março.</p>
+            <code>python gravar_reservas.py reservas.json março_2026.xlsx</code>
+          </div>
+          <button class="btn-export" onclick="downloadJSON()">⬇ Baixar JSON</button>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <div class="toast" id="toast">
+    <span id="toast-icon">✓</span>
+    <span id="toast-msg">Reserva adicionada!</span>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    // ═══════════════════════════════════════════════════════════════
+    //  CONFIGURAÇÃO SUPABASE
+    //  1. Acesse https://supabase.com e crie um projeto gratuito
+    //  2. Vá em Project Settings → API e copie os valores abaixo
+    // ═══════════════════════════════════════════════════════════════
+    const SUPABASE_URL = 'https://rbacksnhmtogoafilxlx.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJiYWNrc25obXRvZ29hZmlseGx4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4NTU5NDEsImV4cCI6MjA4OTQzMTk0MX0.XuY9NpiYV_0yV67_ZbibQtxEpd4av_Azoe-2te8GQtE'; // ⚠️ substitua pela anon key
+
+    const { createClient } = supabase;
+    const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const TABELA = 'reservas'; // nome da tabela no Supabase
+
+    // ───────────────────────────────────────────────────────────────
+
+    const SALAS = {
+      sala: ['03', '04', '05', '06',
+        '09', '10', '11', '12',
+        '13', '14', '15', '16',
+        '17', '18', '20', '22',
+        '23', '24', '25', '26', '27'],
+      auditorio: [
+        'Auditório Alexandre Martins',
+        'Mini Auditório',
+        'Auditório Antonio Abikair'
+      ],
+      lab: ['LABORATÓRIO MAIOR - LAB01']
+    };
+
+    let reservations = [];
+
+    // ── Estado de loading ─────────────────────────────────────────
+    function setLoading(on) {
+      const btn = document.getElementById('btn-add');
+      if (btn) {
+        btn.disabled = on;
+        btn.textContent = on ? 'Aguarde...' : '＋ Adicionar Reserva';
+      }
+    }
+
+    function setListLoading(on) {
+      if (on) {
+        document.getElementById('reservations-list').innerHTML =
+          `<div class="empty-state"><div class="icon" style="font-size:28px;animation:spin 1s linear infinite;display:inline-block">⏳</div><p style="margin-top:10px">Carregando reservas...</p></div>`;
+      }
+    }
+
+    // ── API Supabase: buscar reservas ─────────────────────────────
+    async function fetchReservations() {
+      setListLoading(true);
+      try {
+        const { data, error } = await db
+          .from(TABELA)
+          .select('*')
+          .order('data', { ascending: true })
+          .order('horario_inicio', { ascending: true });
+
+        if (error) throw error;
+        reservations = data || [];
+        renderList();
+      } catch (err) {
+        console.error('Erro ao buscar reservas:', err);
+        showToast('Erro ao carregar reservas. Verifique a conexão com o Supabase.', 'error', 5000);
+        document.getElementById('reservations-list').innerHTML =
+          `<div class="empty-state"><div class="icon">⚠️</div><p>Não foi possível carregar as reservas.<br>Verifique se as credenciais do Supabase estão configuradas.</p></div>`;
+      }
+    }
+
+    // ── API Supabase: salvar reserva ──────────────────────────────
+    async function saveToSupabase(reserva) {
+      const { data, error } = await db
+        .from(TABELA)
+        .insert([{
+          tipo: reserva.tipo,
+          sala: reserva.sala,
+          data: reserva.data,
+          horario_inicio: reserva.horario_inicio,
+          horario_fim: reserva.horario_fim || null,
+          horario: reserva.horario,
+          favorecido: reserva.favorecido || null,
+          evento: reserva.evento || null,
+          motivo: reserva.motivo || null,
+          observacoes: reserva.observacoes || null
+        }])
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data;
+    }
+
+    // ── API Supabase: deletar reserva ─────────────────────────────
+    async function deleteFromSupabase(id) {
+      const { error } = await db
+        .from(TABELA)
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+      return { success: true };
+    }
+
+    function updateRoomOptions() {
+      const tipo = document.getElementById('tipo').value;
+      const sel = document.getElementById('sala');
+      sel.innerHTML = SALAS[tipo].map(s => `<option value="${s}">${s}</option>`).join('');
+
+      const motiGroup = document.getElementById('motivo-group');
+      const evGrp = document.getElementById('evento-group');
+      const labEl = document.getElementById('label-evento');
+      const favEl = document.getElementById('label-favorecido');
+
+      if (tipo === 'lab') {
+        motiGroup.style.display = 'block';
+        labEl.textContent = 'Curso';
+        favEl.textContent = 'Responsável';
+      } else if (tipo === 'auditorio') {
+        motiGroup.style.display = 'none';
+        labEl.textContent = 'Descrição do Evento';
+        favEl.textContent = 'Favorecido';
+      } else {
+        motiGroup.style.display = 'none';
+        labEl.textContent = 'Curso / Evento';
+        favEl.textContent = 'Responsável / Solicitante';
+      }
+    }
+
+    // Returns all time slots between hi and hf (inclusive), or just [hi] if no range
+    function getSlots(hi, hf) {
+      const ALL = [
+        '7:30 - 8:20', '8:20 - 9:10', '9:10 - 9:30', '9:30 - 10:20',
+        '10:20 - 11:10', '11:10 - 12:00', '13:00', '14:00', '15:00',
+        '16:00', '17:00', '18:00', '19:00 - 19:50', '19:50 - 20:40',
+        '20:40 - 21:00', '21:00 - 21:50', '21:50 - 22:40'
+      ];
+      if (!hf) return [hi];
+      const iStart = ALL.indexOf(hi);
+      const iEnd = ALL.indexOf(hf);
+      if (iStart === -1 || iEnd === -1 || iEnd < iStart) return [hi];
+      return ALL.slice(iStart, iEnd + 1);
+    }
+
+    function setFieldError(id, hasError) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.style.borderColor = hasError ? 'var(--danger)' : '';
+      el.style.boxShadow = hasError ? '0 0 0 3px rgba(217,58,58,0.15)' : '';
+    }
+
+    function clearFieldErrors() {
+      ['data', 'sala', 'tipo', 'horario_inicio', 'favorecido', 'evento'].forEach(id => setFieldError(id, false));
+    }
+
+    async function addReservation() {
+      clearFieldErrors();
+
+      const data = document.getElementById('data').value;
+      const sala = document.getElementById('sala').value;
+      const tipo = document.getElementById('tipo').value;
+      const hi = document.getElementById('horario_inicio').value;
+      const hf = document.getElementById('horario_fim').value;
+      const fav = document.getElementById('favorecido').value.trim();
+      const ev = document.getElementById('evento').value.trim();
+      const mot = document.getElementById('motivo').value.trim();
+      const obs = document.getElementById('observacoes').value.trim();
+
+      // ── Validação 1: data obrigatória ────────────────────────────────────────
+      if (!data) {
+        setFieldError('data', true);
+        showToast('Por favor, selecione uma data antes de continuar.', 'error');
+        document.getElementById('data').focus();
+        return;
+      }
+
+      // ── Validação 2: responsável ou evento obrigatório ───────────────────────
+      if (!ev && !fav) {
+        setFieldError('favorecido', true);
+        setFieldError('evento', true);
+        showToast('Informe ao menos o responsável ou o nome do evento.', 'error');
+        return;
+      }
+
+      // ── Validação 3: conflito de horário ─────────────────────────────────────
+      const newSlots = getSlots(hi, hf);
+
+      const conflict = reservations.find(r => {
+        if (r.sala !== sala || r.data !== data) return false;
+        const existSlots = getSlots(r.horario_inicio, r.horario_fim);
+        return newSlots.some(s => existSlots.includes(s));
+      });
+
+      if (conflict) {
+        setFieldError('horario_inicio', true);
+        setFieldError('sala', true);
+        const conflictDesc = conflict.evento || conflict.favorecido || 'outra reserva';
+        const dateFormatted = new Date(data + 'T12:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'long' });
+        showToast(
+          `Conflito de horário! "${conflict.sala}" já está reservada em ${dateFormatted} às ${conflict.horario_inicio}${conflict.horario_fim ? ' – ' + conflict.horario_fim : ''} para "${conflictDesc}".`,
+          'error',
+          6000
+        );
+        return;
+      }
+
+      // ── Tudo ok: salva no Google Sheets ──────────────────────────────────────
+      const horario = hf ? `${hi} até ${hf}` : hi;
+      const novaReserva = { id: Date.now(), tipo, sala, data, horario_inicio: hi, horario_fim: hf, horario, favorecido: fav, evento: ev, motivo: mot, observacoes: obs };
+
+      setLoading(true);
+      try {
+        const salvo = await saveToSupabase(novaReserva);
+        // Usa o registro retornado pelo Supabase (com ID gerado pelo banco)
+        reservations.push(salvo);
+        renderList();
+        showToast('Reserva adicionada com sucesso!', 'success');
+        document.getElementById('evento').value = '';
+        document.getElementById('favorecido').value = '';
+        document.getElementById('motivo').value = '';
+        document.getElementById('observacoes').value = '';
+        clearFieldErrors();
+      } catch (err) {
+        console.error(err);
+        showToast('Erro ao salvar reserva. Verifique a conexão com o Supabase.', 'error', 5000);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    async function deleteReservation(id) {
+      if (!confirm('Tem certeza que deseja remover esta reserva?')) return;
+      try {
+        await deleteFromSupabase(id);
+        reservations = reservations.filter(r => String(r.id) !== String(id));
+        renderList();
+        showToast('Reserva removida com sucesso.', 'success');
+      } catch (err) {
+        console.error(err);
+        showToast('Erro ao remover reserva.', 'error');
+      }
+    }
+
+    function renderList() {
+      const fDate = document.getElementById('filter-date').value;
+      const fTipo = document.getElementById('filter-tipo').value;
+      const fText = document.getElementById('filter-text').value.toLowerCase();
+
+      let list = [...reservations];
+      if (fDate) list = list.filter(r => r.data === fDate);
+      if (fTipo) list = list.filter(r => r.tipo === fTipo);
+      if (fText) list = list.filter(r =>
+        (r.evento || '').toLowerCase().includes(fText) ||
+        (r.sala || '').toLowerCase().includes(fText) ||
+        (r.favorecido || '').toLowerCase().includes(fText)
+      );
+
+      list.sort((a, b) => a.data.localeCompare(b.data) || a.horario_inicio.localeCompare(b.horario_inicio));
+
+      const container = document.getElementById('reservations-list');
+      const count = document.getElementById('count-label');
+      count.textContent = `${reservations.length} reserva${reservations.length !== 1 ? 's' : ''}`;
+
+      if (list.length === 0) {
+        container.innerHTML = `<div class="empty-state"><div class="icon">📋</div><p>${reservations.length > 0 ? 'Nenhuma reserva corresponde ao filtro.' : 'Nenhuma reserva cadastrada ainda.<br>Use o formulário ao lado para adicionar.'}</p></div>`;
+        return;
+      }
+
+      container.innerHTML = list.map(r => {
+        const [, , day] = r.data.split('-');
+        const months = ['', 'JAN', 'FEV', 'MAR', 'ABR', 'MAI', 'JUN', 'JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ'];
+        const mon = months[parseInt(r.data.split('-')[1])];
+        const typeLbl = r.tipo === 'sala' ? 'Sala' : r.tipo === 'auditorio' ? 'Auditório' : 'Lab';
+        const typeCls = `type-${r.tipo}`;
+        const desc = r.evento || r.favorecido || '—';
+        const sub = [r.favorecido, r.observacoes].filter(Boolean).join(' · ');
+        return `<div class="reservation-card">
+      <div class="card-date"><div class="day">${day}</div><div class="month">${mon}</div></div>
+      <div class="card-info">
+        <div class="room">${r.sala} <span class="type-badge ${typeCls}">${typeLbl}</span></div>
+        <div class="event">${desc}</div>
+        ${sub ? `<div class="event" style="margin-top:2px; font-size:11px">${sub}</div>` : ''}
+        <span class="time-badge">⏱ ${r.horario}</span>
+      </div>
+      <div class="card-actions">
+        <button class="btn-del" onclick="deleteReservation(${r.id})">Remover</button>
+      </div>
+    </div>`;
+      }).join('');
+    }
+
+    function clearForm() {
+      document.getElementById('data').value = '';
+      document.getElementById('favorecido').value = '';
+      document.getElementById('evento').value = '';
+      document.getElementById('motivo').value = '';
+      document.getElementById('observacoes').value = '';
+    }
+
+    function downloadJSON() {
+      if (reservations.length === 0) { showToast('Nenhuma reserva para exportar.', 'error'); return; }
+      const blob = new Blob([JSON.stringify(reservations, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'reservas.json';
+      a.click();
+      showToast('JSON baixado! Use o script Python para gravar no Excel.', 'success');
+    }
+
+    let _toastTimer = null;
+    function showToast(msg, type = 'success', duration = 3500) {
+      const t = document.getElementById('toast');
+      const icon = document.getElementById('toast-icon');
+      const m = document.getElementById('toast-msg');
+      if (_toastTimer) clearTimeout(_toastTimer);
+      t.className = `toast show ${type}`;
+      icon.textContent = type === 'success' ? '✓' : '✕';
+      m.textContent = msg;
+      _toastTimer = setTimeout(() => { t.className = 'toast'; }, duration);
+    }
+
+    // ── Init (aguarda DOM + Supabase SDK prontos) ────────────────────────────
+    window.addEventListener('load', () => {
+      // spinner CSS
+      const style = document.createElement('style');
+      style.textContent = '@keyframes spin { to { transform: rotate(360deg); } }';
+      document.head.appendChild(style);
+
+      // data de hoje
+      document.getElementById('current-date').textContent =
+        new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('data').value = today;
+
+      // popula o select de salas
+      updateRoomOptions();
+
+      // carrega reservas do Supabase
+      fetchReservations();
+    });
+  </script>
+</body>
+
+</html>
